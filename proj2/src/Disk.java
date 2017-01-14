@@ -49,6 +49,6 @@ public class Disk {
 	
 	public void playMusic()
 	{
-		bm.play();
+		bm.play(0.8);
 	}
 }

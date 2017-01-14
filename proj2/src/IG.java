@@ -172,8 +172,11 @@ public class IG extends Pane implements Game {
 
 		gameLogic(hand);
 		
-		if (t2.getSize() == 1 || t3.getSize() == 7)
+		if (t2.getSize() == 5 || t3.getSize() == 7)
+		{
 			return GameState.WON;
+		}
+			
 		
 		return GameState.ACTIVE;
 	}
@@ -216,12 +219,12 @@ public class IG extends Pane implements Game {
 		int xPos = palm.getX();
 		int yPos = palm.getY();
 		System.out.println(xPos + " " + yPos);
-		if (-450 < yPos && yPos < 450) {
-			if (-750 < xPos && xPos < -250)
+		if (-450 <= yPos && yPos <=450) {
+			if (-750 <= xPos && xPos < -250)
 				temp = t1;
-			else if (-250 < xPos && xPos < 250)
+			else if (-250 <=xPos && xPos < 250)
 				temp = t2;
-			else if (250 < xPos && xPos < 750)
+			else if (250 <= xPos && xPos <=750)
 				temp = t3;
 		}
 		return temp;
@@ -237,16 +240,7 @@ public class IG extends Pane implements Game {
 
 		int handPos = handHeld(hand);
 		
-		if (handPos == 1 && (System.currentTimeMillis() - this.openTime) > 600 && (System.currentTimeMillis() - this.holdTime) > 600){
-			if (restart.onClick(palm.getX()+750, palm.getY()+450)){
-				this.restartTime = System.currentTimeMillis();
-				restart.questionBox().setVisible(true);
-				logicS = logicState.RESTART;
-			}
-			else{
-				//play music?
-			}
-		}
+		
 		
 		
 		switch (logicS) {
@@ -257,6 +251,16 @@ public class IG extends Pane implements Game {
 				logicS = logicState.HOLD;
 				this.holdTime = System.currentTimeMillis();
 			}
+			else if (handPos == 1 && (System.currentTimeMillis() - this.openTime) > 600){
+				if (restart.onClick(palm.getX()+750, palm.getY()+450)){
+					this.restartTime = System.currentTimeMillis();
+					restart.questionBox().setVisible(true);
+					logicS = logicState.RESTART;
+				}
+				else{
+					//play music?
+				}
+			}
 			break;
 		case HOLD:
 			heldDisk.moveTo((int) map(-750, 750, 0, 1500, palm.getX()), (int) map(-450, 450, 0, 900, palm.getY()));
@@ -264,8 +268,15 @@ public class IG extends Pane implements Game {
 				logicS = logicState.LOOSE;
 			break;
 		case LOOSE:
-			if (heldDisk != null)
-				t.addDisk(heldDisk);
+			
+            if(heldDisk!=null)
+            {
+            	if ( t!=null)
+    				t.addDisk(heldDisk);
+    			else
+    				heldDisk.getHome().addDisk(heldDisk);
+            }
+			
 			heldDisk = null;
 			logicS = logicState.OPEN;
 			this.openTime = System.currentTimeMillis();

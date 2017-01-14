@@ -53,6 +53,7 @@ public class BackGround {
 	public void playMusic()
 	{
 		 mediaPlayer = new MediaPlayer(BGM);
+		 mediaPlayer.setVolume(0.4);
 		 mediaPlayer.setAutoPlay(true);
 		 mediaPlayer.setCycleCount(mediaPlayer.INDEFINITE);
 //		sound.play();
