@@ -38,7 +38,7 @@ class SampleListener extends Listener {
                          + ", fingers: " + frame.fingers().count());
 
         //Get hands
-        for(Hand hand : frame.hands()) {
+        for(com.leapmotion.leap.Hand hand : frame.hands()) {
             String handType = hand.isLeft() ? "Left hand" : "Right hand";
             System.out.println("  " + handType + ", id: " + hand.id()
                              + ", palm position: " + hand.palmPosition());
