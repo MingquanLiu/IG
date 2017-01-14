@@ -8,7 +8,7 @@ import javafx.event.*;
 import java.io.IOException;
 import java.util.*;
 
-
+import com.leapmotion.leap.Controller;
 
 
 public class IG extends Pane implements Game{
@@ -23,6 +23,8 @@ public class IG extends Pane implements Game{
 	 * The height of the game board.
 	 */
 	public static final int HEIGHT = 600;
+	
+	public Hand hand; 
 	
 	
 	public enum GameState {
@@ -51,11 +53,23 @@ public class IG extends Pane implements Game{
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
 		
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			
-		}
+		hand = new Hand();
+
+//		// Add event handler to start the game
+//		setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent e) {
+//				IG.this.setOnMouseClicked(null);// only listen to one click
+//
+//				// As soon as the mouse is clicked, remove the startLabel from
+//				// the game board
+//				getChildren().remove(startLabel);
+//				run();
+//			}
+//		});
+//		
+//        Controller controller = new Controller();
+//        IGListener igListener = new IGListener(this);
 		
 	}
 	
@@ -80,19 +94,23 @@ public class IG extends Pane implements Game{
 		}.start();
 	}
 	
+	public void setHandPos(int x, int y)
+	{
+		hand.setX(x);
+		hand.setY(y);
+	}
+	
 	public GameState runOneTimestep(long deltaNanoTime)
 	{
 		
 		return GameState.ACTIVE;
 	}
 
-	@Override
 	public Pane getPane() {
 		// TODO Auto-generated method stub
 		return this;
 	}
 
-	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return "TowerOfHonoi";

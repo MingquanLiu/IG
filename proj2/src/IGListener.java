@@ -8,6 +8,12 @@ import com.leapmotion.leap.Listener;
 import com.leapmotion.leap.Vector;
 
 class IGListener extends Listener {
+	
+	private IG ig; 
+	
+	public IGListener(IG ig){
+		this.ig = ig;
+	}
     public void onInit(Controller controller) {
         System.out.println("Initialized");
     }
@@ -92,5 +98,9 @@ class IGListener extends Listener {
     	return Math.sqrt(Math.pow((t.getX()-f.getX()), 2) 
     			+ Math.pow((t.getY()-f.getY()), 2)
     			+ Math.pow((t.getZ()-f.getZ()), 2));
+    }
+    
+    private double map(double imin, double imax, double fmin, double fmax, double val){
+    	return (fmax-fmin)/(imax-imin)*val+imin;
     }
 }
