@@ -24,7 +24,7 @@ public class IG extends Pane implements Game{
 	 */
 	public static final int HEIGHT = 600;
 	
-	public Hand hand; 
+	public Palm hand; 
 	
 	Controller controller;
 	
@@ -55,7 +55,7 @@ public class IG extends Pane implements Game{
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
 		
-		hand = new Hand();
+		hand = new Palm();
 		getChildren().add(hand.getCircle());
 
 		// Add event handler to start the game
@@ -106,7 +106,7 @@ public class IG extends Pane implements Game{
 	public GameState runOneTimestep(long deltaNanoTime)
 	{
 		setHandPos((int)map(-200, 200, 0, 800, controller.frame().hands().get(0).stabilizedPalmPosition().getX()), 
-        		(int)map(0, 400, 0, 600, controller.frame().hands().get(0).stabilizedPalmPosition().getZ()));
+        		(int)map(350, 100, 0, 600, controller.frame().hands().get(0).stabilizedPalmPosition().getY()));
         
 		return GameState.ACTIVE;
 	}

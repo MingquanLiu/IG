@@ -1,7 +1,7 @@
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class Hand {
+public class Palm {
 	
 
 	public static final int BALL_RADIUS = 20;
@@ -12,7 +12,7 @@ public class Hand {
 	
 	private Circle circle; 
 	
-	public Hand()
+	public Palm()
 	{
 		X = MAX_X/2;
 		Y = MAX_Y/2;
