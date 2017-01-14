@@ -16,7 +16,23 @@ public class Palm {
 	{
 		X = MAX_X/2;
 		Y = MAX_Y/2;
-		circle = new Circle(X, Y, BALL_RADIUS);
+		circle = new Circle(BALL_RADIUS);
+		circle.setCenterX(X);
+		circle.setCenterY(Y);
+		circle.setFill(Color.BLACK);
+	}
+	
+	public void bePointed(){
+		circle.setFill(Color.ALICEBLUE);
+	}
+	
+	public void bePinched(){
+
+		circle.setFill(Color.CRIMSON);
+		
+	}
+	
+	public void beOpen(){
 		circle.setFill(Color.BLACK);
 	}
 	
@@ -43,8 +59,8 @@ public class Palm {
 	public void updatePosition(int x, int y){
 		setX(x);
 		setY(y);
-		circle.setTranslateX(x - (circle.getLayoutX() + BALL_RADIUS));
-		circle.setTranslateY(y - (circle.getLayoutY() + BALL_RADIUS));
+		circle.setTranslateX(x);
+		circle.setTranslateY(y);
 	}
 
 }

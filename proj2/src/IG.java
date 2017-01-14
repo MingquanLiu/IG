@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.*;
 
 import com.leapmotion.leap.Controller;
+import com.leapmotion.leap.Finger;
+import com.leapmotion.leap.Hand;
+import com.leapmotion.leap.Vector;
 
 
 public class IG extends Pane implements Game{
@@ -78,10 +81,9 @@ public class IG extends Pane implements Game{
 				run();
 			}
 		});
-		
+		//start an event from Leap Motion
          controller = new Controller();
-//        IGListener igListener = new IGListener(this);
-//        controller.addListener(igListener);
+
 		
 	}
 	
@@ -106,15 +108,21 @@ public class IG extends Pane implements Game{
 		}.start();
 	}
 	
-	public void setHandPos(int x, int y)
-	{
-		hand.updatePosition(x, y);
-	}
-	
 	public GameState runOneTimestep(long deltaNanoTime)
 	{
-		setHandPos((int)map(-200, 200, 0, 800, controller.frame().hands().get(0).stabilizedPalmPosition().getX()), 
-        		(int)map(350, 100, 0, 600, controller.frame().hands().get(0).stabilizedPalmPosition().getY()));
+		Hand hand = controller.frame().hands().get(0);
+		if (hand != null){
+			this.hand.updatePosition((int)map(-200, 200, 0, 800, hand.palmPosition().getX()), 
+	        		(int)map(400, 100, 0, 600, hand.palmPosition().getY()));
+		}
+
+		if (isPoint(hand, 65.0f)) {
+			this.hand.bePointed();
+		} else if (isPinch(hand, 80.0f)) {
+			this.hand.bePinched();
+		} else {
+			this.hand.beOpen();
+		}
         
 		return GameState.ACTIVE;
 	}
@@ -131,6 +139,36 @@ public class IG extends Pane implements Game{
 	
 	private double map(double imin, double imax, double fmin, double fmax, double val){
     	return (fmax-fmin)/(imax-imin)*val+imin;
+    }
+	
+    private boolean isPinch(Hand hand, float radius)
+    {
+		int pinches = 0;
+		Vector thumbpos = hand.fingers().get(0).tipPosition();
+		for (int x = 1; x < 5; x++) {
+			if (distance(thumbpos, hand.pointables().get(x).tipPosition()) < radius)
+				pinches++;
+		}
+		
+		return pinches > 2;
+    }
+    
+    private boolean isPoint(Hand hand, float radius)
+    {
+    	int inrange = 0; 
+    	
+    	Vector indexpos = hand.fingers().get(1).tipPosition();
+    	for (Finger finger : hand.fingers())
+    		if (distance(indexpos, finger.tipPosition()) < radius)
+    			inrange++;
+    	return inrange == 1;
+    }
+    
+    private double distance(Vector t, Vector f)
+    {
+    	return Math.sqrt(Math.pow((t.getX()-f.getX()), 2) 
+    			+ Math.pow((t.getY()-f.getY()), 2)
+    			+ Math.pow((t.getZ()-f.getZ()), 2));
     }
 
 }
