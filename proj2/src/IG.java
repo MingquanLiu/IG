@@ -47,9 +47,10 @@ public class IG extends Pane implements Game{
 		WON, LOST, ACTIVE, NEW
 	}
 	
+	private BackGround bg = new BackGround();
 	public IG () {
 		setStyle("-fx-background-color: white;");
-		
+		getChildren().add(bg.getLabel());
 		getChildren().add(t1.getImage());
 		getChildren().add(t2.getImage());
 		getChildren().add(t3.getImage());
@@ -215,6 +216,7 @@ public class IG extends Pane implements Game{
 	{
 		switch (logicS) {
 		case OPEN:
+			bg.changeBG(decideArea());
 			if(handHeld(hand))
 				logicS = logicState.HOLD;
 			break;
