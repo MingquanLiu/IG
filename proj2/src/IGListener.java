@@ -52,6 +52,9 @@ class IGListener extends Listener {
             else 
             	System.out.println("open");
             
+            ig.setHandPos((int)map(-200, 200, 0, 800, hand.stabilizedPalmPosition().getX()), 
+            		(int)map(0, 400, 0, 600, hand.stabilizedPalmPosition().getZ()));
+            
         }
 
         if (!frame.hands().isEmpty()) {

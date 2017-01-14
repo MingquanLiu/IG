@@ -39,5 +39,12 @@ public class Hand {
 	public Circle getCircle(){
 		return circle;
 	}
+	
+	public void updatePosition(int x, int y){
+		setX(x);
+		setY(y);
+		circle.setTranslateX(x - (circle.getLayoutX() + BALL_RADIUS));
+		circle.setTranslateY(y - (circle.getLayoutY() + BALL_RADIUS));
+	}
 
 }

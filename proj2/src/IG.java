@@ -26,6 +26,8 @@ public class IG extends Pane implements Game{
 	
 	public Hand hand; 
 	
+	Controller controller;
+	
 	
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
@@ -54,22 +56,24 @@ public class IG extends Pane implements Game{
 		getChildren().add(startLabel);
 		
 		hand = new Hand();
+		getChildren().add(hand.getCircle());
 
-//		// Add event handler to start the game
-//		setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			@Override
-//			public void handle(MouseEvent e) {
-//				IG.this.setOnMouseClicked(null);// only listen to one click
-//
-//				// As soon as the mouse is clicked, remove the startLabel from
-//				// the game board
-//				getChildren().remove(startLabel);
-//				run();
-//			}
-//		});
-//		
-//        Controller controller = new Controller();
+		// Add event handler to start the game
+		setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				IG.this.setOnMouseClicked(null);// only listen to one click
+
+				// As soon as the mouse is clicked, remove the startLabel from
+				// the game board
+				getChildren().remove(startLabel);
+				run();
+			}
+		});
+		
+         controller = new Controller();
 //        IGListener igListener = new IGListener(this);
+//        controller.addListener(igListener);
 		
 	}
 	
@@ -96,13 +100,14 @@ public class IG extends Pane implements Game{
 	
 	public void setHandPos(int x, int y)
 	{
-		hand.setX(x);
-		hand.setY(y);
+		hand.updatePosition(x, y);
 	}
 	
 	public GameState runOneTimestep(long deltaNanoTime)
 	{
-		
+		setHandPos((int)map(-200, 200, 0, 800, controller.frame().hands().get(0).stabilizedPalmPosition().getX()), 
+        		(int)map(0, 400, 0, 600, controller.frame().hands().get(0).stabilizedPalmPosition().getZ()));
+        
 		return GameState.ACTIVE;
 	}
 
@@ -115,5 +120,9 @@ public class IG extends Pane implements Game{
 		// TODO Auto-generated method stub
 		return "TowerOfHonoi";
 	}
+	
+	private double map(double imin, double imax, double fmin, double fmax, double val){
+    	return (fmax-fmin)/(imax-imin)*val+imin;
+    }
 
 }
