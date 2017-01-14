@@ -9,12 +9,18 @@ public class Restart {
 	private Label imageLabel = new Label("", new ImageView(image));
 	private int x, y;
 	
+	private Image image2 = new Image("restart2.png");
+	private Label imageLabel2 = new Label("", new ImageView(image2));
+	
 	Restart(int x, int y)
 	{
 		this.x = x; 
 		this.y = y; 
 		imageLabel.setLayoutX(x);
 		imageLabel.setLayoutY(y);
+		imageLabel2.setVisible(false);
+		imageLabel2.setLayoutX(750-137);
+		imageLabel2.setLayoutY(450-84);
 	}
 	
 	public Label getImage(){
@@ -40,6 +46,10 @@ public class Restart {
 	public boolean onClick(int x, int y){
 		return y > getUpperBound() && y < getLowerBound() 
 				&& x > getLeftBound() && x < getRightBound();
+	}
+	
+	public Label questionBox(){
+		return imageLabel2;
 	}
 	
 }

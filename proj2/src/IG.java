@@ -22,10 +22,10 @@ public class IG extends Pane implements Game {
 	 */
 	public static final int HEIGHT = 900;
 
-	private long openTime, holdTime;
+	private long openTime, holdTime, restartTime;
 
 	public enum logicState {
-		OPEN, HOLD, LOOSE
+		OPEN, HOLD, LOOSE, RESTART
 	}
 
 	private logicState logicS;
@@ -51,7 +51,6 @@ public class IG extends Pane implements Game {
 		getChildren().add(t1.getImage());
 		getChildren().add(t2.getImage());
 		getChildren().add(t3.getImage());
-		getChildren().add(restart.getImage());
 		
 		getChildren().add(six.getImage());
 		getChildren().add(five.getImage());
@@ -60,6 +59,8 @@ public class IG extends Pane implements Game {
 		getChildren().add(two.getImage());
 		getChildren().add(one.getImage());
 		getChildren().add(zero.getImage());
+		getChildren().add(restart.getImage());
+		getChildren().add(restart.questionBox());
 		
 		palm = new PalmH();
 		getChildren().add(palm.getCircle());
@@ -160,16 +161,16 @@ public class IG extends Pane implements Game {
 		return GameState.ACTIVE;
 	}
 	
-	private boolean handHeld(Hand hand) {
+	private int handHeld(Hand hand) {
 		if (isPoint(hand, 65.0f)) {
 			palm.bePointed();
-			return false;
+			return 1;
 		} else if (isPinch(hand, 50.0f)) {
 			palm.bePinched();
-			return true;
+			return 2;
 		} else {
 			palm.beOpen();
-			return false;
+			return 3;
 		}
 	}
 
@@ -197,7 +198,7 @@ public class IG extends Pane implements Game {
 		Tower temp = null;
 		int xPos = palm.getX();
 		int yPos = palm.getY();
-		System.out.println(yPos);
+		System.out.println(xPos + " " + yPos);
 		if (-450 < yPos && yPos < 450) {
 			if (-750 < xPos && xPos < -250)
 				temp = t1;
@@ -217,9 +218,23 @@ public class IG extends Pane implements Game {
 		else
 			bg.changeBG(t.getArea());
 
+		int handPos = handHeld(hand);
+		
+		if (handPos == 1 && (System.currentTimeMillis() - this.openTime) > 600 && (System.currentTimeMillis() - this.holdTime) > 600){
+			if (restart.onClick(palm.getX()+750, palm.getY()+450)){
+				this.restartTime = System.currentTimeMillis();
+				restart.questionBox().setVisible(true);
+				logicS = logicState.RESTART;
+			}
+			else{
+				//play music?
+			}
+		}
+		
+		
 		switch (logicS) {
 		case OPEN:
-			if (handHeld(hand) && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
+			if (handPos == 2 && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
 				heldDisk = t.getTop();
 				logicS = logicState.HOLD;
 				this.holdTime = System.currentTimeMillis();
@@ -227,7 +242,7 @@ public class IG extends Pane implements Game {
 			break;
 		case HOLD:
 			heldDisk.moveTo((int) map(-750, 750, 0, 1500, palm.getX()), (int) map(-450, 450, 0, 900, palm.getY()));
-			if (!handHeld(hand) && (System.currentTimeMillis() - this.openTime) > 600)
+			if (handPos!=2 && (System.currentTimeMillis() - this.holdTime) > 600)
 				logicS = logicState.LOOSE;
 			break;
 		case LOOSE:
@@ -236,6 +251,9 @@ public class IG extends Pane implements Game {
 			heldDisk = null;
 			logicS = logicState.OPEN;
 			this.openTime = System.currentTimeMillis();
+			break;
+		case RESTART:
+			
 			break;
 		}
 	}
