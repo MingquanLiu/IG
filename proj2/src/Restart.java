@@ -52,4 +52,12 @@ public class Restart {
 		return imageLabel2;
 	}
 	
+	public boolean onClickYes(int x, int y){//-80-20, 20-60 
+		return false;
+	}
+	
+	public boolean onClickNo(int x, int y){//60-150, 20-60
+		return false;
+	}
+	
 }

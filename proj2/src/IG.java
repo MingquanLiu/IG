@@ -170,7 +170,8 @@ public class IG extends Pane implements Game {
 					(int) map(400, 100, -450, 450, hand.palmPosition().getY()));
 		}
 
-		gameLogic(hand);
+		if (!gameLogic(hand))
+			return GameState.NEW;
 		
 		if (t2.getSize() == 1 || t3.getSize() == 7)
 			return GameState.WON;
@@ -228,7 +229,7 @@ public class IG extends Pane implements Game {
 	}
 
 
-	private void gameLogic(Hand hand) {
+	private boolean gameLogic(Hand hand) {
 		Tower t = decideArea();
 		if (t == null)
 			logicS = logicState.LOOSE;
@@ -259,7 +260,7 @@ public class IG extends Pane implements Game {
 			}
 			break;
 		case HOLD:
-			heldDisk.moveTo((int) map(-750, 750, 0, 1500, palm.getX()), (int) map(-450, 450, 0, 900, palm.getY()));
+			heldDisk.moveTo(palm.getX()+750, palm.getY()+450);
 			if (handPos!=2 && (System.currentTimeMillis() - this.holdTime) > 600)
 				logicS = logicState.LOOSE;
 			break;
@@ -271,9 +272,18 @@ public class IG extends Pane implements Game {
 			this.openTime = System.currentTimeMillis();
 			break;
 		case RESTART:
-			
+			if (handPos == 1) {
+				if (this.restart.onClickNo(palm.getX() + 750, palm.getY() + 450)) {
+					logicS = logicState.OPEN;
+					this.openTime = System.currentTimeMillis();
+				} else if (this.restart.onClickYes(palm.getX() + 750, palm.getY() + 450)) {
+					return false;//discontinue the logic
+				}
+			}
 			break;
 		}
+		
+		return true;
 	}
 
 	private double distance(Vector t, Vector f) {
