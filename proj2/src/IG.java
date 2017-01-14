@@ -63,6 +63,7 @@ public class IG extends Pane implements Game{
 		getChildren().add(t2.getImage());
 		getChildren().add(t3.getImage());
 		restartGame(GameState.NEW);
+		bg.playMusic();
 	}
 	
 	public void restartGame(GameState state)

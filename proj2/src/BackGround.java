@@ -1,6 +1,12 @@
+//import com.sun.media.jfxmedia.AudioClip;
+
+import java.io.File;
+
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.*;
+import javafx.stage.FileChooser;            
 
 public class BackGround {
 
@@ -8,12 +14,20 @@ public class BackGround {
 	private int BGWidth = 1500;
 	Image left, mid, right;
 	Label imageLabel;
+	Media BGM;
+	MediaPlayer mediaPlayer;
+	MediaView mediaView;
+	AudioClip sound;
 	public BackGround()
 	{
 		left = new Image("bg left.png", BGWidth, BGHeight, false, false);
 		mid = new Image("bg mid.png", BGWidth, BGHeight, false, false);
 		right = new Image("bg right.png", BGWidth, BGHeight, false, false);
 		imageLabel = new Label("", new ImageView(mid));
+		BGM = new Media(getClass().getClassLoader().getResource("BGM.mp3").toString());
+		
+		
+//		 mediaView.setMediaPlayer(mediaPlayer);
 	}
 	
 	public Label getLabel()
@@ -34,5 +48,19 @@ public class BackGround {
 			imageLabel.setGraphic(new ImageView(right));
 			break;
 		}
+	}
+	
+	public void playMusic()
+	{
+		 mediaPlayer = new MediaPlayer(BGM);
+		 mediaPlayer.setAutoPlay(true);
+		 mediaPlayer.setCycleCount(mediaPlayer.INDEFINITE);
+//		sound.play();
+	}
+	
+	public void play()
+	{
+		 mediaPlayer.setAutoPlay(true);
+//		sound.play();
 	}
 }
