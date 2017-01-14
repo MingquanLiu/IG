@@ -4,9 +4,9 @@ import javafx.scene.image.ImageView;
 
 public class Tower {
 	//instance variables
-		private final int towerWidth = 160;
-		private final int towerHeight = 160;
-		Image image = new Image("towerImage.png", towerWidth, towerHeight, true, false);
+		private final int towerWidth = 250;
+		private final int towerHeight = 400;
+		Image image = new Image("towerImage.png", towerWidth, towerHeight, false, false);
 		private double x,y;//location
 		private Label imageLabel = new Label("", new ImageView(image));
 		

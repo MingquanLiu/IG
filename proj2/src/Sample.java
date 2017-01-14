@@ -42,7 +42,7 @@ class SampleListener extends Listener {
             String handType = hand.isLeft() ? "Left hand" : "Right hand";
             System.out.println("  " + handType + ", id: " + hand.id()
                              + ", palm position: " + hand.palmPosition());
-
+//
 //            // Get the hand's normal vector and direction
 //            Vector normal = hand.palmNormal();
 //            Vector direction = hand.direction();
@@ -57,7 +57,7 @@ class SampleListener extends Listener {
 //            System.out.println("  Arm direction: " + arm.direction()
 //                             + ", wrist position: " + arm.wristPosition()
 //                             + ", elbow position: " + arm.elbowPosition());
-//
+
             // Get fingers
 //            for (Finger finger : hand.fingers()) {
 //                System.out.println("    " + finger.type() + ", id: " + finger.id()
@@ -76,7 +76,13 @@ class SampleListener extends Listener {
 //            System.out.println(hand.pointables().count());
 //            for (Finger f : hand.fingers())
 //            	System.out.println(f.type() + f.toString());
-
+            
+            if (isPoint(hand, 70.0f))
+            	System.out.println("pointed");
+            else if (isPinch(hand, 80.0f))
+            	System.out.println("pinched");
+            else 
+            	System.out.println("open");
             
         }
 
@@ -93,7 +99,32 @@ class SampleListener extends Listener {
         
         
     }
-
+    
+    private boolean isPinch(Hand hand, float radius)
+    {
+		int pinches = 0;
+		Vector thumbpos = hand.fingers().get(0).tipPosition();
+		System.out.println(thumbpos);
+		for (int x = 1; x < 5; x++) {
+			System.out.println(hand.fingers().get(x).tipPosition());
+			if (distance(thumbpos, hand.pointables().get(x).tipPosition()) < radius)
+				pinches++;
+		}
+		
+		return pinches > 2;
+    }
+    
+    private boolean isPoint(com.leapmotion.leap.Hand hand, float radius)
+    {
+    	int inrange = 0; 
+    	
+    	Vector indexpos = hand.fingers().get(1).tipPosition();
+    	System.out.println(indexpos);
+    	for (Finger finger : hand.fingers())
+    		if (distance(indexpos, finger.tipPosition()) < radius)
+    			inrange++;
+    	return inrange == 1;
+    }
     
     private double distance(Vector t, Vector f)
     {

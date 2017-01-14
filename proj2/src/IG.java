@@ -18,16 +18,20 @@ public class IG extends Pane implements Game{
 	/**
 	 * The width of the game board.
 	 */
-	public static final int WIDTH = 800;
+	public static final int WIDTH = 1000;
 	/**
 	 * The height of the game board.
 	 */
 	public static final int HEIGHT = 600;
 	
-	public Palm hand; 
 	
+	//instance variables
+	public Palm hand; 	
 	Controller controller;
-	
+	private LinkedList<Tower> towers = new LinkedList<Tower>();
+	private Tower t1 = new Tower(200, 300);
+	private Tower t2 = new Tower(500, 300);
+	private Tower t3 = new Tower(800, 300);
 	
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
@@ -35,7 +39,10 @@ public class IG extends Pane implements Game{
 	
 	public IG () {
 		setStyle("-fx-background-color: white;");
-
+		
+		getChildren().add(t1.getImage());
+		getChildren().add(t2.getImage());
+		getChildren().add(t3.getImage());
 		restartGame(GameState.NEW);
 	}
 	
@@ -67,6 +74,7 @@ public class IG extends Pane implements Game{
 				// As soon as the mouse is clicked, remove the startLabel from
 				// the game board
 				getChildren().remove(startLabel);
+				
 				run();
 			}
 		});
