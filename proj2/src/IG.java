@@ -33,13 +33,21 @@ public class IG extends Pane implements Game{
 	public enum logicState {
 		OPEN, HOLD, LOOSE
 	}
+	
+	private Disk zero = new Disk(0, "00.png");
+	private Disk one = new Disk(1, "01.png");
+	private Disk two = new Disk(2, "02.png");
+	private Disk three = new Disk(3, "03.png");
+	private Disk four = new Disk(4, "04.png");
+	private Disk five = new Disk(5, "05.png");
+	private Disk six= new Disk(6, "06.png");
 	//instance variables
-	public PalmH hand; 	
+	public PalmH palm; 	
 	Controller controller;
 	private LinkedList<Tower> towers = new LinkedList<Tower>();
-	private Tower t1 = new Tower(250, 450);
-	private Tower t2 = new Tower(750, 450);
-	private Tower t3 = new Tower(1250, 450);
+	private Tower t1 = new Tower(250, 500,1);
+	private Tower t2 = new Tower(750, 500,2);
+	private Tower t3 = new Tower(1250, 500,3);
 	
 	private Disk heldDisk;
 	private logicState logicS;
@@ -67,14 +75,29 @@ public class IG extends Pane implements Game{
 		} else {
 			message = "";
 		}
+		t1.addDisk(six);
+		t1.addDisk(five);
+		t1.addDisk(four);
+		t1.addDisk(three);
+		t1.addDisk(two);
+		t1.addDisk(one);
+		t1.addDisk(zero);
+		
+		getChildren().add(six.getImage());
+		getChildren().add(five.getImage());
+		getChildren().add(four.getImage());
+		getChildren().add(three.getImage());
+		getChildren().add(two.getImage());
+		getChildren().add(one.getImage());
+		getChildren().add(zero.getImage());
 		
 		final Label startLabel = new Label(message + "Click mouse to start");
 		startLabel.setLayoutX(WIDTH / 2 - 50);
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
 		
-		hand = new PalmH();
-		getChildren().add(hand.getCircle());
+		palm = new PalmH();
+		getChildren().add(palm.getCircle());
 		
 		heldDisk = null;
 		logicS = logicState.OPEN;
@@ -122,11 +145,11 @@ public class IG extends Pane implements Game{
 	{
 		Hand hand = controller.frame().hands().get(0);
 		if (hand != null){
-			this.hand.updatePosition((int)map(-200, 200, 0, 800, hand.palmPosition().getX()), 
-	        		(int)map(400, 100, 0, 600, hand.palmPosition().getY()));
+			this.palm.updatePosition((int)map(-200, 200, -750, 750, hand.palmPosition().getX()), 
+	        		(int)map(400, 100, -450, 450, hand.palmPosition().getY()));
 		}
 
-		handHeld(hand);
+		gameLogic(hand);
 		return GameState.ACTIVE;
 	}
 
@@ -141,7 +164,7 @@ public class IG extends Pane implements Game{
 	}
 	
 	private double map(double imin, double imax, double fmin, double fmax, double val){
-    	return (fmax-fmin)/(imax-imin)*val+imin;
+    	return (fmax-fmin)/(imax-imin)*(val-imin)+fmin;
     }
 	
     private boolean isPinch(Hand hand, float radius)
@@ -176,63 +199,77 @@ public class IG extends Pane implements Game{
 
 	public void setHandPos(int map, int map2) {
 		// TODO Auto-generated method stub
-		this.hand.updatePosition(map, map2);
+		palm.updatePosition(map, map2);
 		
 	}
 	//Game Logic Area 
 	
 	//Area Area Area
-	private int decideArea()
+	private Tower decideArea()
 	{
-		int xPos = hand.getX();
-		int yPos = hand.getY();
-		if(0<yPos&&yPos<900)
+		Tower temp = null;
+		int xPos = palm.getX();
+		int yPos = palm.getY();
+		System.out.println(yPos);
+		if(-450<yPos&&yPos<450)
 		{
-			if(0<xPos&&xPos<500)
-				area =1;
-			if(500<xPos&&xPos<1000)
-				area =2;
-			if(1000<xPos&&xPos<1500)
-				area =3;
+			if(-750<xPos&&xPos<-250)
+				temp = t1;
+			else 
+				if(-250<xPos&&xPos<250)
+				temp = t2;
+				else
+					if(250<xPos&&xPos<750)
+					temp =t3;
 		}
-		return area;
+		return temp;
 	}
 	
 	private boolean handHeld(Hand hand)
 	{
 		if (isPoint(hand, 65.0f)) {
-			this.hand.bePointed();
-			return true;
-		} else if (isPinch(hand, 80.0f)) {
-			this.hand.bePinched();
+			palm.bePointed();
+			return false;
+		} else 			
+			if (isPinch(hand, 50.0f)) {
+			palm.bePinched();
 			return true;
 		} else {
-			this.hand.beOpen();
+			palm.beOpen();
 			return false;
 		}
 	}
 	
 	private void gameLogic(Hand hand)
 	{
+		Tower t = decideArea();
+		if(t==null)
+			logicS = logicState.LOOSE;
+		else
+			bg.changeBG(t.getArea());
+		
 		switch (logicS) {
-		case OPEN:
-			bg.changeBG(decideArea());
-			if(handHeld(hand))
+		case OPEN:	
+			if(handHeld(hand)&&!t.stackEmpty())
+			{
+				heldDisk = t.getTop();
 				logicS = logicState.HOLD;
+			}
 			break;
 		case HOLD:
-			
+			heldDisk.moveTo((int)map(-750, 750, 0, 1500, palm.getX()), (int)map(-450, 450, 0, 900, palm.getY()));
+			if(!handHeld(hand))
+				logicS = logicState.LOOSE;
 			break;
 		case LOOSE:
-			
+			if(heldDisk !=null)
+				t.addDisk(heldDisk);
+			heldDisk = null;
+			logicS = logicState.OPEN;
 			break;
 		}
 	}
 	
-	private void changeBackground(int area)
-	{
-		
-	}
 
 }
 

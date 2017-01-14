@@ -14,7 +14,7 @@ public class PalmH {
 	public static final int MAX_Y = IG.HEIGHT;
 	private final int handWidth = 70;
 	private final int handHeight = 80;
-	Image hand,handHold;
+	Image hand,handHold,pointed;
 	
 	private Label imageLabel,imageLabelHold,imageReturn;
 	int choice;										// 0 means open 1 means point 2 means hold 
@@ -23,12 +23,13 @@ public class PalmH {
 		choice =0;
 		X = MAX_X/2;
 		Y = MAX_Y/2;
-		hand = new Image("HandsOpen.png", handWidth, handHeight, false, false);
+		hand = new Image("open.png", handWidth, handHeight, false, false);
 		imageLabel = new Label("", new ImageView(hand));
 		imageLabel.setLayoutX(X-handWidth/2);
 		imageLabel.setLayoutY(Y-handHeight/2);
 		
-		handHold = new Image("handsHolding.png", handWidth, handHeight, false, false);
+		handHold = new Image("pinch.png", handWidth, handHeight, false, false);
+		pointed = new Image("point.png", handWidth, handHeight, false, false);
 //		imageLabelHold = new Label("",new ImageView(handHold));
 //		imageLabelHold.setLayoutX(X-handWidth/2);
 //		imageLabelHold.setLayoutY(Y-handHeight/2);
@@ -40,7 +41,7 @@ public class PalmH {
 	
 	public void bePointed(){
 		//imageReturn = imageLabelHold;
-		imageLabel.setGraphic(new ImageView(handHold));
+		imageLabel.setGraphic(new ImageView(pointed));
 	}
 	
 	public void bePinched(){

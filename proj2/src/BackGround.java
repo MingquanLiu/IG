@@ -10,9 +10,9 @@ public class BackGround {
 	Label imageLabel;
 	public BackGround()
 	{
-		left = new Image("bg.png", BGWidth, BGHeight, false, false);
-		mid = new Image("bg.png", BGWidth, BGHeight, false, false);
-		right = new Image("bg.png", BGWidth, BGHeight, false, false);
+		left = new Image("bg left.png", BGWidth, BGHeight, false, false);
+		mid = new Image("bg mid.png", BGWidth, BGHeight, false, false);
+		right = new Image("bg right.png", BGWidth, BGHeight, false, false);
 		imageLabel = new Label("", new ImageView(mid));
 	}
 	

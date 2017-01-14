@@ -6,21 +6,21 @@
 public class Disk {
 	//instance variables
 	private int diskWidth;//depending on the value of the disk
-	private final int diskHeight = 32;
+	private final int diskHeight = 70;
 	private int value;//0-6
 	Image image;
 	private double x,y;//location
 	private Label imageLabel;
-	
-	public Disk(int value, double x, double y, String url){
+	private Tower home;
+	public Disk(int value, String url){
 		this.value = value;
-		diskWidth = (value+1)*32;
-		this.x = x;
-		this.y = y;
+		diskWidth = 400;
+//		this.x = x;
+//		this.y = y;
 		image = new Image(url, diskWidth, diskHeight, true, false);
 		imageLabel = new Label("", new ImageView(image));
-		imageLabel.setLayoutX(x-diskWidth/2);
-		imageLabel.setLayoutY(y-diskHeight/2);
+//		imageLabel.setLayoutX(x-diskWidth/2);
+//		imageLabel.setLayoutY(y-diskHeight/2);
 	}
 	public Label getImage(){
 		return imageLabel;
@@ -41,6 +41,8 @@ public class Disk {
 
 		imageLabel.setTranslateX(newX - (imageLabel.getLayoutX() + diskWidth/2));
 		imageLabel.setTranslateY(newY - (imageLabel.getLayoutY() + diskHeight/2));
+//		imageLabel.setTranslateX(newX);
+//		imageLabel.setTranslateY(newY);
 	}
 	
 	public int getValue()
@@ -48,4 +50,13 @@ public class Disk {
 		return value;
 	}
 	
+	public void setHome(Tower t)
+	{
+		home = t;
+	}
+	
+	public Tower getHome()
+	{
+		return home;
+	}
 }
