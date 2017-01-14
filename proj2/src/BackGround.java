@@ -24,7 +24,7 @@ public class BackGround {
 		mid = new Image("bg mid.png", BGWidth, BGHeight, false, false);
 		right = new Image("bg right.png", BGWidth, BGHeight, false, false);
 		imageLabel = new Label("", new ImageView(mid));
-		BGM = new Media(getClass().getClassLoader().getResource("BGM.mp3").toString());
+		BGM = new Media(getClass().getClassLoader().getResource("BGMBind.wav").toString());
 		
 		
 //		 mediaView.setMediaPlayer(mediaPlayer);
