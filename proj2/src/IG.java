@@ -52,6 +52,18 @@ public class IG extends Pane implements Game {
 		getChildren().add(t2.getImage());
 		getChildren().add(t3.getImage());
 		getChildren().add(restart.getImage());
+		
+		getChildren().add(six.getImage());
+		getChildren().add(five.getImage());
+		getChildren().add(four.getImage());
+		getChildren().add(three.getImage());
+		getChildren().add(two.getImage());
+		getChildren().add(one.getImage());
+		getChildren().add(zero.getImage());
+		
+		palm = new PalmH();
+		getChildren().add(palm.getCircle());
+
 		restartGame(GameState.NEW);
 		bg.playMusic();
 	}
@@ -73,6 +85,11 @@ public class IG extends Pane implements Game {
 		} else {
 			message = "";
 		}
+		
+		t1.resetStack();
+		t2.resetStack();
+		t3.resetStack();
+		
 		t1.addDisk(six);
 		t1.addDisk(five);
 		t1.addDisk(four);
@@ -81,21 +98,10 @@ public class IG extends Pane implements Game {
 		t1.addDisk(one);
 		t1.addDisk(zero);
 
-		getChildren().add(six.getImage());
-		getChildren().add(five.getImage());
-		getChildren().add(four.getImage());
-		getChildren().add(three.getImage());
-		getChildren().add(two.getImage());
-		getChildren().add(one.getImage());
-		getChildren().add(zero.getImage());
-
 		final Label startLabel = new Label(message + "Click mouse to start");
 		startLabel.setLayoutX(WIDTH / 2 - 50);
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
-
-		palm = new PalmH();
-		getChildren().add(palm.getCircle());
 
 		heldDisk = null;
 		logicS = logicState.OPEN;
@@ -148,7 +154,7 @@ public class IG extends Pane implements Game {
 
 		gameLogic(hand);
 		
-		if (t2.getSize() == 7 || t3.getSize() == 7)
+		if (t2.getSize() == 1 || t3.getSize() == 7)
 			return GameState.WON;
 		
 		return GameState.ACTIVE;

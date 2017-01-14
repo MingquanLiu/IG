@@ -59,5 +59,11 @@ public class Tower {
 	public int getSize() {
 		return count;
 	}
+	
+	public void resetStack()
+	{
+		diskStack = new Stack<Disk>();
+		count =0;
+	}
 
 }
