@@ -4,18 +4,21 @@ import javafx.scene.control.Label;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.MouseEvent;
 import javafx.event.*;
+
+import java.io.IOException;
 import java.util.*;
 
 
 
-public class IG extends Pane{
+
+public class IG extends Pane implements Game{
 	
 	
 	// Constants
 	/**
 	 * The width of the game board.
 	 */
-	public static final int WIDTH = 400;
+	public static final int WIDTH = 800;
 	/**
 	 * The height of the game board.
 	 */
@@ -24,6 +27,12 @@ public class IG extends Pane{
 	
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
+	}
+	
+	public IG () {
+		setStyle("-fx-background-color: white;");
+
+		restartGame(GameState.NEW);
 	}
 	
 	public void restartGame(GameState state)
@@ -42,6 +51,11 @@ public class IG extends Pane{
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
 		
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			
+		}
 		
 	}
 	
@@ -70,6 +84,18 @@ public class IG extends Pane{
 	{
 		
 		return GameState.ACTIVE;
+	}
+
+	@Override
+	public Pane getPane() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return "TowerOfHonoi";
 	}
 
 }
