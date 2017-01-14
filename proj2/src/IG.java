@@ -5,19 +5,13 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.input.MouseEvent;
 import javafx.event.*;
 
-import java.io.IOException;
-import java.util.*;
-
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Finger;
 import com.leapmotion.leap.Hand;
 import com.leapmotion.leap.Vector;
-import com.sun.xml.internal.ws.wsdl.writer.document.OpenAtts;
 
+public class IG extends Pane implements Game {
 
-public class IG extends Pane implements Game{
-	
-	
 	// Constants
 	/**
 	 * The width of the game board.
@@ -27,46 +21,49 @@ public class IG extends Pane implements Game{
 	 * The height of the game board.
 	 */
 	public static final int HEIGHT = 900;
-	
-	int area =2;
-	
+
+	private long openTime, holdTime;
+
 	public enum logicState {
 		OPEN, HOLD, LOOSE
 	}
-	
-	private Disk zero = new Disk(0, "00.png");
-	private Disk one = new Disk(1, "01.png");
-	private Disk two = new Disk(2, "02.png");
-	private Disk three = new Disk(3, "03.png");
-	private Disk four = new Disk(4, "04.png");
-	private Disk five = new Disk(5, "05.png");
-	private Disk six= new Disk(6, "06.png");
-	//instance variables
-	public PalmH palm; 	
-	Controller controller;
-	private LinkedList<Tower> towers = new LinkedList<Tower>();
-	private Tower t1 = new Tower(250, 500,1);
-	private Tower t2 = new Tower(750, 500,2);
-	private Tower t3 = new Tower(1250, 500,3);
-	
-	private Disk heldDisk;
+
 	private logicState logicS;
+	private Disk zero = new Disk(0, "00.png"), one = new Disk(1, "01.png"), two = new Disk(2, "02.png"),
+			three = new Disk(3, "03.png"), four = new Disk(4, "04.png"), five = new Disk(5, "05.png"),
+			six = new Disk(6, "06.png");
+	public PalmH palm;
+	Controller controller;
+	private Tower t1 = new Tower(250, 500, 1), t2 = new Tower(750, 500, 2), t3 = new Tower(1250, 500, 3);
+
+	private Restart restart = new Restart(1250, 40);
+	private Disk heldDisk;
+
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
 	}
-	
+
 	private BackGround bg = new BackGround();
-	public IG () {
+
+	public IG() {
 		setStyle("-fx-background-color: white;");
 		getChildren().add(bg.getLabel());
 		getChildren().add(t1.getImage());
 		getChildren().add(t2.getImage());
 		getChildren().add(t3.getImage());
+		getChildren().add(restart.getImage());
 		restartGame(GameState.NEW);
 	}
-	
-	public void restartGame(GameState state)
-	{
+
+	public Pane getPane() {
+		return this;
+	}
+
+	public String getName() {
+		return "TowerOfHonoi";
+	}
+
+	public void restartGame(GameState state) {
 		final String message;
 		if (state == GameState.LOST) {
 			message = "Game Over\n";
@@ -82,7 +79,7 @@ public class IG extends Pane implements Game{
 		t1.addDisk(two);
 		t1.addDisk(one);
 		t1.addDisk(zero);
-		
+
 		getChildren().add(six.getImage());
 		getChildren().add(five.getImage());
 		getChildren().add(four.getImage());
@@ -90,15 +87,15 @@ public class IG extends Pane implements Game{
 		getChildren().add(two.getImage());
 		getChildren().add(one.getImage());
 		getChildren().add(zero.getImage());
-		
+
 		final Label startLabel = new Label(message + "Click mouse to start");
 		startLabel.setLayoutX(WIDTH / 2 - 50);
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
-		
+
 		palm = new PalmH();
 		getChildren().add(palm.getCircle());
-		
+
 		heldDisk = null;
 		logicS = logicState.OPEN;
 		// Add event handler to start the game
@@ -106,132 +103,61 @@ public class IG extends Pane implements Game{
 			@Override
 			public void handle(MouseEvent e) {
 				IG.this.setOnMouseClicked(null);// only listen to one click
-
 				// As soon as the mouse is clicked, remove the startLabel from
 				// the game board
 				getChildren().remove(startLabel);
-				
 				run();
 			}
 		});
-		//start an event from Leap Motion
-         controller = new Controller();
-
-		
+		// start an event from Leap Motion
+		controller = new Controller();
 	}
-	
-	public void run () {
-		// Instantiate and start an AnimationTimer to update the component of the game.
-		new AnimationTimer () {
+
+	public void run() {
+		// Instantiate and start an AnimationTimer to update the component of
+		// the game.
+		new AnimationTimer() {
 			private long lastNanoTime = -1;
-			public void handle (long currentNanoTime) {
-				if (lastNanoTime >= 0) {  // Necessary for first clock-tick.
+
+			public void handle(long currentNanoTime) {
+				if (lastNanoTime >= 0) { // Necessary for first clock-tick.
 					GameState state;
 					if ((state = runOneTimestep(currentNanoTime - lastNanoTime)) != GameState.ACTIVE) {
-						// Once the game is no longer ACTIVE, stop the AnimationTimer.
+						// Once the game is no longer ACTIVE, stop the
+						// AnimationTimer.
 						stop();
-						// Restart the game, with a message that depends on whether
-						// the user won or lost the game.
+						// Restart the game, with a message that depends on
+						// whether the user won or lost the game.
 						restartGame(state);
 					}
 				}
-				// Keep track of how much time actually transpired since the last clock-tick.
+				// Keep track of how much time actually transpired since the
+				// last clock-tick.
 				lastNanoTime = currentNanoTime;
 			}
 		}.start();
 	}
-	
-	public GameState runOneTimestep(long deltaNanoTime)
-	{
+
+	public GameState runOneTimestep(long deltaNanoTime) {
 		Hand hand = controller.frame().hands().get(0);
-		if (hand != null){
-			this.palm.updatePosition((int)map(-200, 200, -750, 750, hand.palmPosition().getX()), 
-	        		(int)map(400, 100, -450, 450, hand.palmPosition().getY()));
+		if (hand != null) {
+			this.palm.updatePosition((int) map(-200, 200, -750, 750, hand.palmPosition().getX()),
+					(int) map(400, 100, -450, 450, hand.palmPosition().getY()));
 		}
 
 		gameLogic(hand);
+		
+		if (t2.getSize() == 7 || t3.getSize() == 7)
+			return GameState.WON;
+		
 		return GameState.ACTIVE;
 	}
-
-	public Pane getPane() {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	public String getName() {
-		// TODO Auto-generated method stub
-		return "TowerOfHonoi";
-	}
 	
-	private double map(double imin, double imax, double fmin, double fmax, double val){
-    	return (fmax-fmin)/(imax-imin)*(val-imin)+fmin;
-    }
-	
-    private boolean isPinch(Hand hand, float radius)
-    {
-		int pinches = 0;
-		Vector thumbpos = hand.fingers().get(0).tipPosition();
-		for (int x = 1; x < 5; x++) {
-			if (distance(thumbpos, hand.pointables().get(x).tipPosition()) < radius)
-				pinches++;
-		}
-		
-		return pinches > 2;
-    }
-    
-    private boolean isPoint(Hand hand, float radius)
-    {
-    	int inrange = 0; 
-    	
-    	Vector indexpos = hand.fingers().get(1).tipPosition();
-    	for (Finger finger : hand.fingers())
-    		if (distance(indexpos, finger.tipPosition()) < radius)
-    			inrange++;
-    	return inrange == 1;
-    }
-    
-    private double distance(Vector t, Vector f)
-    {
-    	return Math.sqrt(Math.pow((t.getX()-f.getX()), 2) 
-    			+ Math.pow((t.getY()-f.getY()), 2)
-    			+ Math.pow((t.getZ()-f.getZ()), 2));
-    }
-
-	public void setHandPos(int map, int map2) {
-		// TODO Auto-generated method stub
-		palm.updatePosition(map, map2);
-		
-	}
-	//Game Logic Area 
-	
-	//Area Area Area
-	private Tower decideArea()
-	{
-		Tower temp = null;
-		int xPos = palm.getX();
-		int yPos = palm.getY();
-		System.out.println(yPos);
-		if(-450<yPos&&yPos<450)
-		{
-			if(-750<xPos&&xPos<-250)
-				temp = t1;
-			else 
-				if(-250<xPos&&xPos<250)
-				temp = t2;
-				else
-					if(250<xPos&&xPos<750)
-					temp =t3;
-		}
-		return temp;
-	}
-	
-	private boolean handHeld(Hand hand)
-	{
+	private boolean handHeld(Hand hand) {
 		if (isPoint(hand, 65.0f)) {
 			palm.bePointed();
 			return false;
-		} else 			
-			if (isPinch(hand, 50.0f)) {
+		} else if (isPinch(hand, 50.0f)) {
 			palm.bePinched();
 			return true;
 		} else {
@@ -239,37 +165,80 @@ public class IG extends Pane implements Game{
 			return false;
 		}
 	}
-	
-	private void gameLogic(Hand hand)
-	{
+
+	private boolean isPinch(Hand hand, float radius) {
+		int pinches = 0;
+		Vector thumbpos = hand.fingers().get(0).tipPosition();
+		for (int x = 1; x < 5; x++) {
+			if (distance(thumbpos, hand.pointables().get(x).tipPosition()) < radius)
+				pinches++;
+		}
+		return pinches > 2;
+	}
+
+	private boolean isPoint(Hand hand, float radius) {
+		int inrange = 0;
+
+		Vector indexpos = hand.fingers().get(1).tipPosition();
+		for (Finger finger : hand.fingers())
+			if (distance(indexpos, finger.tipPosition()) < radius)
+				inrange++;
+		return inrange == 1;
+	}
+
+	private Tower decideArea() {
+		Tower temp = null;
+		int xPos = palm.getX();
+		int yPos = palm.getY();
+		System.out.println(yPos);
+		if (-450 < yPos && yPos < 450) {
+			if (-750 < xPos && xPos < -250)
+				temp = t1;
+			else if (-250 < xPos && xPos < 250)
+				temp = t2;
+			else if (250 < xPos && xPos < 750)
+				temp = t3;
+		}
+		return temp;
+	}
+
+
+	private void gameLogic(Hand hand) {
 		Tower t = decideArea();
-		if(t==null)
+		if (t == null)
 			logicS = logicState.LOOSE;
 		else
 			bg.changeBG(t.getArea());
-		
+
 		switch (logicS) {
-		case OPEN:	
-			if(handHeld(hand)&&!t.stackEmpty())
-			{
+		case OPEN:
+			if (handHeld(hand) && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
 				heldDisk = t.getTop();
 				logicS = logicState.HOLD;
+				this.holdTime = System.currentTimeMillis();
 			}
 			break;
 		case HOLD:
-			heldDisk.moveTo((int)map(-750, 750, 0, 1500, palm.getX()), (int)map(-450, 450, 0, 900, palm.getY()));
-			if(!handHeld(hand))
+			heldDisk.moveTo((int) map(-750, 750, 0, 1500, palm.getX()), (int) map(-450, 450, 0, 900, palm.getY()));
+			if (!handHeld(hand) && (System.currentTimeMillis() - this.openTime) > 600)
 				logicS = logicState.LOOSE;
 			break;
 		case LOOSE:
-			if(heldDisk !=null)
+			if (heldDisk != null)
 				t.addDisk(heldDisk);
 			heldDisk = null;
 			logicS = logicState.OPEN;
+			this.openTime = System.currentTimeMillis();
 			break;
 		}
 	}
-	
 
+	private double distance(Vector t, Vector f) {
+		return Math.sqrt(Math.pow((t.getX() - f.getX()), 2) + Math.pow((t.getY() - f.getY()), 2)
+				+ Math.pow((t.getZ() - f.getZ()), 2));
+	}
+
+	private double map(double imin, double imax, double fmin, double fmax, double val) {
+		return (fmax - fmin) / (imax - imin) * (val - imin) + fmin;
+	}
 }
-
