@@ -32,6 +32,16 @@ public class IG extends Pane implements Game {
 	private Disk zero = new Disk(0, "00.png"), one = new Disk(1, "01.png"), two = new Disk(2, "02.png"),
 			three = new Disk(3, "03.png"), four = new Disk(4, "04.png"), five = new Disk(5, "05.png"),
 			six = new Disk(6, "06.png");
+//	
+//	private AudioClip mZero = new AudioClip(getClass().getClassLoader().getResource("01.wav").toString()),
+//			mOne = new AudioClip(getClass().getClassLoader().getResource("02.wav").toString()), 
+//			mTwo = new AudioClip(getClass().getClassLoader().getResource("03.wav").toString()),
+//  		    mThree = new AudioClip(getClass().getClassLoader().getResource("04.wav").toString()),
+//  		    mFour = new AudioClip(getClass().getClassLoader().getResource("05.wav").toString()),  
+//  		  	mFive = new AudioClip(getClass().getClassLoader().getResource("06.wav").toString()),
+//  		  	mSix = new AudioClip(getClass().getClassLoader().getResource("07.wav").toString());
+	
+	
 	public PalmH palm;
 	Controller controller;
 	private Tower t1 = new Tower(250, 500, 1), t2 = new Tower(750, 500, 2), t3 = new Tower(1250, 500, 3);
@@ -44,7 +54,6 @@ public class IG extends Pane implements Game {
 	}
 
 	private BackGround bg = new BackGround();
-
 	public IG() {
 		setStyle("-fx-background-color: white;");
 		getChildren().add(bg.getLabel());
@@ -60,6 +69,14 @@ public class IG extends Pane implements Game {
 		getChildren().add(two.getImage());
 		getChildren().add(one.getImage());
 		getChildren().add(zero.getImage());
+		
+		zero.setMusic("01.wav");
+		one.setMusic("02.wav");
+		two.setMusic("03.wav");
+		three.setMusic("04.wav");
+		four.setMusic("05.wav");
+		five.setMusic("06.wav");
+		six.setMusic("07.wav");
 		
 		palm = new PalmH();
 		getChildren().add(palm.getCircle());
@@ -221,6 +238,7 @@ public class IG extends Pane implements Game {
 		case OPEN:
 			if (handHeld(hand) && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
 				heldDisk = t.getTop();
+				heldDisk.playMusic();
 				logicS = logicState.HOLD;
 				this.holdTime = System.currentTimeMillis();
 			}

@@ -12,6 +12,7 @@ public class Disk {
 	private double x, y;// location
 	private Label imageLabel;
 	private Tower home;
+	AudioClip bm = null;
 
 	public Disk(int value, String url) {
 		this.value = value;
@@ -39,5 +40,15 @@ public class Disk {
 
 	public Tower getHome() {
 		return home;
+	}
+	
+	public void setMusic(String url)
+	{
+		bm = new AudioClip(getClass().getClassLoader().getResource(url).toString());
+	}
+	
+	public void playMusic()
+	{
+		bm.play();
 	}
 }
