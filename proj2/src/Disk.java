@@ -12,12 +12,12 @@ public class Disk {
 	private double x,y;//location
 	private Label imageLabel;
 	
-	public Disk(int value, double x, double y){
+	public Disk(int value, double x, double y, String url){
 		this.value = value;
 		diskWidth = (value+1)*32;
 		this.x = x;
 		this.y = y;
-		image = new Image("diskImage.jpg", diskWidth, diskHeight, true, false);
+		image = new Image(url, diskWidth, diskHeight, true, false);
 		imageLabel = new Label("", new ImageView(image));
 		imageLabel.setLayoutX(x-diskWidth/2);
 		imageLabel.setLayoutY(y-diskHeight/2);
@@ -41,6 +41,11 @@ public class Disk {
 
 		imageLabel.setTranslateX(newX - (imageLabel.getLayoutX() + diskWidth/2));
 		imageLabel.setTranslateY(newY - (imageLabel.getLayoutY() + diskHeight/2));
+	}
+	
+	public int getValue()
+	{
+		return value;
 	}
 	
 }

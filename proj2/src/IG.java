@@ -12,6 +12,7 @@ import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Finger;
 import com.leapmotion.leap.Hand;
 import com.leapmotion.leap.Vector;
+import com.sun.xml.internal.ws.wsdl.writer.document.OpenAtts;
 
 
 public class IG extends Pane implements Game{
@@ -21,21 +22,27 @@ public class IG extends Pane implements Game{
 	/**
 	 * The width of the game board.
 	 */
-	public static final int WIDTH = 1000;
+	public static final int WIDTH = 1500;
 	/**
 	 * The height of the game board.
 	 */
-	public static final int HEIGHT = 600;
+	public static final int HEIGHT = 900;
 	
+	int area =2;
 	
+	public enum logicState {
+		OPEN, HOLD, LOOSE
+	}
 	//instance variables
-	public Palm hand; 	
+	public PalmH hand; 	
 	Controller controller;
 	private LinkedList<Tower> towers = new LinkedList<Tower>();
-	private Tower t1 = new Tower(200, 300);
-	private Tower t2 = new Tower(500, 300);
-	private Tower t3 = new Tower(800, 300);
+	private Tower t1 = new Tower(250, 450);
+	private Tower t2 = new Tower(750, 450);
+	private Tower t3 = new Tower(1250, 450);
 	
+	private Disk heldDisk;
+	private logicState logicS;
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
 	}
@@ -65,9 +72,11 @@ public class IG extends Pane implements Game{
 		startLabel.setLayoutY(HEIGHT / 2 + 100);
 		getChildren().add(startLabel);
 		
-		hand = new Palm();
+		hand = new PalmH();
 		getChildren().add(hand.getCircle());
-
+		
+		heldDisk = null;
+		logicS = logicState.OPEN;
 		// Add event handler to start the game
 		setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -116,14 +125,7 @@ public class IG extends Pane implements Game{
 	        		(int)map(400, 100, 0, 600, hand.palmPosition().getY()));
 		}
 
-		if (isPoint(hand, 65.0f)) {
-			this.hand.bePointed();
-		} else if (isPinch(hand, 80.0f)) {
-			this.hand.bePinched();
-		} else {
-			this.hand.beOpen();
-		}
-        
+		handHeld(hand);
 		return GameState.ACTIVE;
 	}
 
@@ -171,4 +173,64 @@ public class IG extends Pane implements Game{
     			+ Math.pow((t.getZ()-f.getZ()), 2));
     }
 
+	public void setHandPos(int map, int map2) {
+		// TODO Auto-generated method stub
+		this.hand.updatePosition(map, map2);
+		
+	}
+	//Game Logic Area 
+	
+	//Area Area Area
+	private int decideArea()
+	{
+		int xPos = hand.getX();
+		int yPos = hand.getY();
+		if(0<yPos&&yPos<900)
+		{
+			if(0<xPos&&xPos<500)
+				area =1;
+			if(500<xPos&&xPos<1000)
+				area =2;
+			if(1000<xPos&&xPos<1500)
+				area =3;
+		}
+		return area;
+	}
+	
+	private boolean handHeld(Hand hand)
+	{
+		if (isPoint(hand, 65.0f)) {
+			this.hand.bePointed();
+			return true;
+		} else if (isPinch(hand, 80.0f)) {
+			this.hand.bePinched();
+			return true;
+		} else {
+			this.hand.beOpen();
+			return false;
+		}
+	}
+	
+	private void gameLogic(Hand hand)
+	{
+		switch (logicS) {
+		case OPEN:
+			if(handHeld(hand))
+				logicS = logicState.HOLD;
+			break;
+		case HOLD:
+			
+			break;
+		case LOOSE:
+			
+			break;
+		}
+	}
+	
+	private void changeBackground(int area)
+	{
+		
+	}
+
 }
+

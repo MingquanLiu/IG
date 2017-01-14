@@ -1,3 +1,5 @@
+import java.util.Stack;
+
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,6 +11,7 @@ public class Tower {
 		Image image = new Image("towerImage.png", towerWidth, towerHeight, false, false);
 		private double x,y;//location
 		private Label imageLabel = new Label("", new ImageView(image));
+		private Stack<Disk> diskStack = new Stack<Disk>();
 		
 		public Tower(double x, double y){
 			this.x = x;
@@ -19,6 +22,28 @@ public class Tower {
 		
 		public Label getImage(){
 			return imageLabel;
+		}
+		
+		public boolean addDisk(Disk disk, Tower t)
+		{
+			if(diskStack.peek()==null)
+			{
+				diskStack.push(disk);
+				return true;
+			}
+			if(disk.getValue()<diskStack.peek().getValue())
+			{
+				diskStack.push(disk);
+				return true;
+			}
+			
+			t.addDisk(disk, this);
+			return false;
+		}
+		
+		public Disk getTop()
+		{
+			return diskStack.pop();
 		}
 	
 }
