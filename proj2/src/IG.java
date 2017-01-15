@@ -56,6 +56,7 @@ public class IG extends Pane implements Game {
 	private BackGround bg = new BackGround();
 	
 	private Label winImage = new Label("",new ImageView(new Image("winwin.png",1300,800,false,false)));
+	private Label insImage = new Label("",new ImageView(new Image("Instruction.png",240,180,false,false)));
 	
 	public IG() {
 		setStyle("-fx-background-color: white;");
@@ -89,6 +90,10 @@ public class IG extends Pane implements Game {
 //		winImage.setLayoutY(HEIGHT/2);
 		getChildren().add(winImage);
 		winImage.setVisible(false);
+		
+		insImage.setLayoutX(40);
+		insImage.setLayoutY(20);
+		getChildren().add(insImage);
 
 		restartGame(GameState.NEW);
 	}
