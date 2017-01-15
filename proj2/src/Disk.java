@@ -66,4 +66,9 @@ public class Disk {
 			return 0;
 	}
 	
+	public void resetFirst()
+	{
+		firstTime = true;
+	}
+	
 }

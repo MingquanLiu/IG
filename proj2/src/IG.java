@@ -132,6 +132,13 @@ public class IG extends Pane implements Game {
 		t1.addDisk(one);
 		t1.addDisk(zero);//top of the stack
 
+		six.resetFirst();
+		five.resetFirst();
+		four.resetFirst();
+		three.resetFirst();
+		two.resetFirst();
+		one.resetFirst();
+		zero.resetFirst();
 //		final Label startLabel = new Label(message + "Click mouse to start");
 //		startLabel.setLayoutX(WIDTH / 2 - 50);
 //		startLabel.setLayoutY(HEIGHT / 2 + 100);
@@ -202,7 +209,7 @@ public class IG extends Pane implements Game {
 		if (!gameLogic(hand))
 			return GameState.NEW;
 		
-		if (t2.getSize() == 2 || t3.getSize() == 7){
+		if (t2.getSize() == 5 || t3.getSize() == 5){
 			winImage.setVisible(true);
 			bg.stop();
 			bg.playWinningMusic();
