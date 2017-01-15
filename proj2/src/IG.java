@@ -1,6 +1,8 @@
 import javafx.scene.layout.*;
 import javafx.scene.media.AudioClip;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.MouseEvent;
 import javafx.event.*;
@@ -52,6 +54,9 @@ public class IG extends Pane implements Game {
 	}
 
 	private BackGround bg = new BackGround();
+	
+	private Label winImage = new Label("",new ImageView(new Image("winwin.png",1300,800,false,false)));
+	
 	public IG() {
 		setStyle("-fx-background-color: white;");
 		getChildren().add(bg.getLabel());
@@ -80,6 +85,11 @@ public class IG extends Pane implements Game {
 		five.setMusic("06.wav");
 		six.setMusic("07.wav");
 		
+		winImage.setLayoutX(140);
+//		winImage.setLayoutY(HEIGHT/2);
+		getChildren().add(winImage);
+		winImage.setVisible(false);
+
 		restartGame(GameState.NEW);
 	}
 
@@ -97,7 +107,7 @@ public class IG extends Pane implements Game {
 		if (state == GameState.LOST) {
 			message = "Game Over\n";
 		} else if (state == GameState.WON) {
-			message = "You won!\n";
+//			message = "You won!\n";
 		} else {
 			message = "";
 		}
@@ -114,10 +124,10 @@ public class IG extends Pane implements Game {
 		t1.addDisk(one);
 		t1.addDisk(zero);//top of the stack
 
-		final Label startLabel = new Label(message + "Click mouse to start");
-		startLabel.setLayoutX(WIDTH / 2 - 50);
-		startLabel.setLayoutY(HEIGHT / 2 + 100);
-		getChildren().add(startLabel);
+//		final Label startLabel = new Label(message + "Click mouse to start");
+//		startLabel.setLayoutX(WIDTH / 2 - 50);
+//		startLabel.setLayoutY(HEIGHT / 2 + 100);
+//		getChildren().add(startLabel);
 
 		heldDisk = null;
 		logicS = logicState.OPEN;
@@ -128,9 +138,7 @@ public class IG extends Pane implements Game {
 				IG.this.setOnMouseClicked(null);// only listen to one click
 				// As soon as the mouse is clicked, remove the startLabel from
 				// the game board
-				getChildren().remove(startLabel);
-				bg.stop();
-				bg.playMusic();
+//				getChildren().remove(startLabel);
 				run();
 			}
 		});
@@ -140,6 +148,9 @@ public class IG extends Pane implements Game {
 	}
 
 	public void run() {
+		winImage.setVisible(false);
+		bg.stop();
+		bg.playMusic();
 		// Instantiate and start an AnimationTimer to update the component of
 		// the game.
 		new AnimationTimer() {
@@ -181,8 +192,9 @@ public class IG extends Pane implements Game {
 		//if something abnormal occurred in the game that request for a restart
 		if (!gameLogic(hand))
 			return GameState.NEW;
-		//winning condition: puts all disks from t1 into t2 or t3
-		if (t2.getSize() == 7 || t3.getSize() == 7){
+		
+		if (t2.getSize() == 2 || t3.getSize() == 7){
+			winImage.setVisible(true);
 			bg.stop();
 			bg.playWinningMusic();
 			return GameState.WON;
@@ -286,7 +298,9 @@ public class IG extends Pane implements Game {
 		case OPEN:
 			if (handPos == 2 && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
 				heldDisk = t.getTop();
-				heldDisk.playMusic();
+//				heldDisk.playMusic();
+				bg.play(heldDisk.firstT());
+				
 				logicS = logicState.HOLD;
 				this.holdTime = System.currentTimeMillis();
 			}

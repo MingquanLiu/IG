@@ -65,5 +65,7 @@ public class Tower {
 		diskStack = new Stack<Disk>();
 		count =0;
 	}
+	
+	
 
 }
