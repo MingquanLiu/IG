@@ -71,6 +71,9 @@ public class IG extends Pane implements Game {
 		getChildren().add(restart.getImage());
 		getChildren().add(restart.questionBox());
 		
+		palm = new PalmH();
+		getChildren().add(palm.getCircle());
+		
 		zero.setMusic("01.wav");
 		one.setMusic("02.wav");
 		two.setMusic("03.wav");
@@ -79,11 +82,9 @@ public class IG extends Pane implements Game {
 		five.setMusic("06.wav");
 		six.setMusic("07.wav");
 		
-		palm = new PalmH();
-		getChildren().add(palm.getCircle());
+		
 
 		restartGame(GameState.NEW);
-		bg.playMusic();
 	}
 
 	public Pane getPane() {
@@ -91,7 +92,7 @@ public class IG extends Pane implements Game {
 	}
 
 	public String getName() {
-		return "TowerOfHonoi";
+		return " Tower Of Honoi ";
 	}
 
 	public void restartGame(GameState state) {
@@ -131,11 +132,15 @@ public class IG extends Pane implements Game {
 				// As soon as the mouse is clicked, remove the startLabel from
 				// the game board
 				getChildren().remove(startLabel);
+				bg.stop();
+				bg.playMusic();
 				run();
+
 			}
 		});
 		// start an event from Leap Motion
 		controller = new Controller();
+
 	}
 
 	public void run() {
@@ -174,7 +179,9 @@ public class IG extends Pane implements Game {
 		if (!gameLogic(hand))
 			return GameState.NEW;
 		
-		if (t2.getSize() == 2 || t3.getSize() == 7){
+		if (t2.getSize() == 7 || t3.getSize() == 7){
+			bg.stop();
+			bg.playWinningMusic();
 			return GameState.WON;
 		}
 
@@ -260,7 +267,7 @@ public class IG extends Pane implements Game {
 			}
 			break;
 		case HOLD:
-			heldDisk.moveTo(palm.getX()+750, palm.getY()+450);
+			heldDisk.moveTo(palm.getX()+710, palm.getY()+490);
 			if (handPos!=2 && (System.currentTimeMillis() - this.holdTime) > 600)
 				logicS = logicState.LOOSE;
 			break;
