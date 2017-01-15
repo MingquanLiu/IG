@@ -174,12 +174,10 @@ public class IG extends Pane implements Game {
 		if (!gameLogic(hand))
 			return GameState.NEW;
 		
-		if (t2.getSize() == 5 || t3.getSize() == 7)
-		{
+		if (t2.getSize() == 2 || t3.getSize() == 7){
 			return GameState.WON;
 		}
-			
-		
+
 		return GameState.ACTIVE;
 	}
 	
@@ -235,15 +233,12 @@ public class IG extends Pane implements Game {
 
 	private boolean gameLogic(Hand hand) {
 		Tower t = decideArea();
-		if (t == null)
+		if (t == null && logicS !=logicState.RESTART)
 			logicS = logicState.LOOSE;
-		else
+		else if (logicS !=logicState.RESTART)
 			bg.changeBG(t.getArea());
 
 		int handPos = handHeld(hand);
-		
-		
-		
 		
 		switch (logicS) {
 		case OPEN:
@@ -270,25 +265,25 @@ public class IG extends Pane implements Game {
 				logicS = logicState.LOOSE;
 			break;
 		case LOOSE:
-			
-            if(heldDisk!=null)
-            {
+            if(heldDisk!=null){
             	if ( t!=null)
     				t.addDisk(heldDisk);
     			else
     				heldDisk.getHome().addDisk(heldDisk);
             }
-			
 			heldDisk = null;
 			logicS = logicState.OPEN;
 			this.openTime = System.currentTimeMillis();
 			break;
 		case RESTART:
 			if (handPos == 1) {
+				System.out.println(this.restart.onClickNo(palm.getX() + 750, palm.getY() + 450));
 				if (this.restart.onClickNo(palm.getX() + 750, palm.getY() + 450)) {
 					logicS = logicState.OPEN;
 					this.openTime = System.currentTimeMillis();
+					restart.questionBox().setVisible(false);
 				} else if (this.restart.onClickYes(palm.getX() + 750, palm.getY() + 450)) {
+					restart.questionBox().setVisible(false);
 					return false;//discontinue the logic
 				}
 			}
