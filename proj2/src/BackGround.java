@@ -62,6 +62,8 @@ public class BackGround {
 	public void play()
 	{
 		 mediaPlayer.setAutoPlay(true);
+//		 mediaPlayer.setVolume(0.4);
+		System.out.println(mediaPlayer.getVolume()); 
 //		sound.play();
 	}
 }

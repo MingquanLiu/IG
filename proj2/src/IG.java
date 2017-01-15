@@ -165,6 +165,7 @@ public class IG extends Pane implements Game {
 
 	public GameState runOneTimestep(long deltaNanoTime) {
 		Hand hand = controller.frame().hands().get(0);
+		bg.play();
 		if (hand != null) {
 			this.palm.updatePosition((int) map(-200, 200, -750, 750, hand.palmPosition().getX()),
 					(int) map(400, 100, -450, 450, hand.palmPosition().getY()));
@@ -219,7 +220,7 @@ public class IG extends Pane implements Game {
 		Tower temp = null;
 		int xPos = palm.getX();
 		int yPos = palm.getY();
-		System.out.println(xPos + " " + yPos);
+//		System.out.println(xPos + " " + yPos);
 		if (-450 <= yPos && yPos <=450) {
 			if (-750 <= xPos && xPos < -250)
 				temp = t1;
