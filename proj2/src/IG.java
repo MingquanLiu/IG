@@ -1,6 +1,8 @@
 import javafx.scene.layout.*;
 import javafx.scene.media.AudioClip;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.MouseEvent;
 import javafx.event.*;
@@ -22,38 +24,39 @@ public class IG extends Pane implements Game {
 	 */
 	public static final int HEIGHT = 900;
 
-	private long openTime, holdTime, restartTime;
+	private long openTime, holdTime;
 
+	/**
+	 * The several states the cursor/hand could be in
+	 */
 	public enum logicState {
 		OPEN, HOLD, LOOSE, RESTART
 	}
-
 	private logicState logicS;
+	
 	private Disk zero = new Disk(0, "00.png"), one = new Disk(1, "01.png"), two = new Disk(2, "02.png"),
 			three = new Disk(3, "03.png"), four = new Disk(4, "04.png"), five = new Disk(5, "05.png"),
 			six = new Disk(6, "06.png");
-//	
-//	private AudioClip mZero = new AudioClip(getClass().getClassLoader().getResource("01.wav").toString()),
-//			mOne = new AudioClip(getClass().getClassLoader().getResource("02.wav").toString()), 
-//			mTwo = new AudioClip(getClass().getClassLoader().getResource("03.wav").toString()),
-//  		    mThree = new AudioClip(getClass().getClassLoader().getResource("04.wav").toString()),
-//  		    mFour = new AudioClip(getClass().getClassLoader().getResource("05.wav").toString()),  
-//  		  	mFive = new AudioClip(getClass().getClassLoader().getResource("06.wav").toString()),
-//  		  	mSix = new AudioClip(getClass().getClassLoader().getResource("07.wav").toString());
 	
-	
+	//not to be confused with Hand, the default LeapMotion Object vs this, an Javafx component
 	public PalmH palm;
+	//Leap Motion controller
 	Controller controller;
 	private Tower t1 = new Tower(250, 500, 1), t2 = new Tower(750, 500, 2), t3 = new Tower(1250, 500, 3);
-
+    //to handle restart from the middle of a game
 	private Restart restart = new Restart(1250, 40);
+	//stores the one object being picked by the curser
 	private Disk heldDisk;
 
+	//the states that the game coudl be in
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
 	}
 
 	private BackGround bg = new BackGround();
+	
+	private Label winImage = new Label("",new ImageView(new Image("winwin.png",1300,800,false,false)));
+	
 	public IG() {
 		setStyle("-fx-background-color: white;");
 		getChildren().add(bg.getLabel());
@@ -69,7 +72,7 @@ public class IG extends Pane implements Game {
 		getChildren().add(one.getImage());
 		getChildren().add(zero.getImage());
 		getChildren().add(restart.getImage());
-		getChildren().add(restart.questionBox());
+		getChildren().add(restart.questionBox());//hidden
 		
 		palm = new PalmH();
 		getChildren().add(palm.getCircle());
@@ -82,15 +85,19 @@ public class IG extends Pane implements Game {
 		five.setMusic("06.wav");
 		six.setMusic("07.wav");
 		
-		
+		winImage.setLayoutX(140);
+//		winImage.setLayoutY(HEIGHT/2);
+		getChildren().add(winImage);
+		winImage.setVisible(false);
 
 		restartGame(GameState.NEW);
 	}
 
+	@Override
 	public Pane getPane() {
 		return this;
 	}
-
+	@Override
 	public String getName() {
 		return " Tower Of Honoi ";
 	}
@@ -100,7 +107,7 @@ public class IG extends Pane implements Game {
 		if (state == GameState.LOST) {
 			message = "Game Over\n";
 		} else if (state == GameState.WON) {
-			message = "You won!\n";
+//			message = "You won!\n";
 		} else {
 			message = "";
 		}
@@ -109,18 +116,18 @@ public class IG extends Pane implements Game {
 		t2.resetStack();
 		t3.resetStack();
 		
-		t1.addDisk(six);
+		t1.addDisk(six);//bottom of the stack
 		t1.addDisk(five);
 		t1.addDisk(four);
 		t1.addDisk(three);
 		t1.addDisk(two);
 		t1.addDisk(one);
-		t1.addDisk(zero);
+		t1.addDisk(zero);//top of the stack
 
-		final Label startLabel = new Label(message + "Click mouse to start");
-		startLabel.setLayoutX(WIDTH / 2 - 50);
-		startLabel.setLayoutY(HEIGHT / 2 + 100);
-		getChildren().add(startLabel);
+//		final Label startLabel = new Label(message + "Click mouse to start");
+//		startLabel.setLayoutX(WIDTH / 2 - 50);
+//		startLabel.setLayoutY(HEIGHT / 2 + 100);
+//		getChildren().add(startLabel);
 
 		heldDisk = null;
 		logicS = logicState.OPEN;
@@ -131,11 +138,8 @@ public class IG extends Pane implements Game {
 				IG.this.setOnMouseClicked(null);// only listen to one click
 				// As soon as the mouse is clicked, remove the startLabel from
 				// the game board
-				getChildren().remove(startLabel);
-				bg.stop();
-				bg.playMusic();
+//				getChildren().remove(startLabel);
 				run();
-
 			}
 		});
 		// start an event from Leap Motion
@@ -144,6 +148,9 @@ public class IG extends Pane implements Game {
 	}
 
 	public void run() {
+		winImage.setVisible(false);
+		bg.stop();
+		bg.playMusic();
 		// Instantiate and start an AnimationTimer to update the component of
 		// the game.
 		new AnimationTimer() {
@@ -152,7 +159,7 @@ public class IG extends Pane implements Game {
 			public void handle(long currentNanoTime) {
 				if (lastNanoTime >= 0) { // Necessary for first clock-tick.
 					GameState state;
-					if ((state = runOneTimestep(currentNanoTime - lastNanoTime)) != GameState.ACTIVE) {
+					if ((state = runOneTimestep()) != GameState.ACTIVE) {
 						// Once the game is no longer ACTIVE, stop the
 						// AnimationTimer.
 						stop();
@@ -165,34 +172,47 @@ public class IG extends Pane implements Game {
 				// last clock-tick.
 				lastNanoTime = currentNanoTime;
 			}
-		}.start();
+		}.start();//start animation
 	}
 
-	public GameState runOneTimestep(long deltaNanoTime) {
+	/**
+	 * Update one frame for the animation and controls all of the background processiong
+	 * @return the status of the game going on
+	 */
+	private GameState runOneTimestep() {
+		//only the first hand in the game is being considered
 		Hand hand = controller.frame().hands().get(0);
 		bg.play();
+		
+		//updates the position of the palm based on the location of the center of the hand
 		if (hand != null) {
 			this.palm.updatePosition((int) map(-200, 200, -750, 750, hand.palmPosition().getX()),
 					(int) map(400, 100, -450, 450, hand.palmPosition().getY()));
 		}
-
+		//if something abnormal occurred in the game that request for a restart
 		if (!gameLogic(hand))
 			return GameState.NEW;
 		
-		if (t2.getSize() == 7 || t3.getSize() == 7){
+		if (t2.getSize() == 2 || t3.getSize() == 7){
+			winImage.setVisible(true);
 			bg.stop();
 			bg.playWinningMusic();
 			return GameState.WON;
 		}
-
+		//if everything is normal
 		return GameState.ACTIVE;
 	}
 	
+	/**
+	 * identify the gesture of the hand to one of these gestures: point with index finger, pinch, and open
+	 * @param hand given the hand object detected by Leap Motion
+	 * @return the corresponding index of each position
+	 */
 	private int handHeld(Hand hand) {
-		if (isPoint(hand, 65.0f)) {
+		if (isPoint(hand, 65.0f)) {//index finger approx. 6.5 cm away from all other finger tips
 			palm.bePointed();
 			return 1;
-		} else if (isPinch(hand, 50.0f)) {
+		} else if (isPinch(hand, 50.0f)) {//all fingers are within 5cm radius of the tip of the thumb
 			palm.bePinched();
 			return 2;
 		} else {
@@ -201,6 +221,14 @@ public class IG extends Pane implements Game {
 		}
 	}
 
+	/**
+	 * determine if the hand detected by LeapMotion is in pinch gesture: 
+	 * it is in pinch position of 3/4 of the remaining fingers are within the given
+	 * radius of the thumb bc of noise
+	 * @param hand the hand object returned by Leap Motion
+	 * @param radius how far away each finger tip should be away from the thumb in pinch position
+	 * @return if the hand is in pinch gesture
+	 */
 	private boolean isPinch(Hand hand, float radius) {
 		int pinches = 0;
 		Vector thumbpos = hand.fingers().get(0).tipPosition();
@@ -211,6 +239,13 @@ public class IG extends Pane implements Game {
 		return pinches > 2;
 	}
 
+	/**
+	 * determine if the hand detected by LeapMotion is in point gesture: 
+	 * the tip of the index finger is at least at radius distance away
+	 * @param hand the hand object returned by Leap Motion
+	 * @param radius radius how far away each finger tip should be away from the index in point position
+	 * @return if there is no tip of fingers within the radius
+	 */
 	private boolean isPoint(Hand hand, float radius) {
 		int inrange = 0;
 
@@ -221,6 +256,10 @@ public class IG extends Pane implements Game {
 		return inrange == 1;
 	}
 
+	/**
+	 * determine whether the cursor is in either the left, the middle, or the right third of the frame
+	 * @return the tower that is associated with that part of the frame
+	 */
 	private Tower decideArea() {
 		Tower temp = null;
 		int xPos = palm.getX();
@@ -238,8 +277,16 @@ public class IG extends Pane implements Game {
 	}
 
 
+	/**
+	 * Main logic behind picking up disks and placing them in allowed positions
+	 * @param hand radius how far away each finger tip should be away from the thumb in pinch position
+	 * @return if the game can continue as normal or requires break in
+	 */
 	private boolean gameLogic(Hand hand) {
+		
 		Tower t = decideArea();
+		
+		//let loose of the disk
 		if (t == null && logicS !=logicState.RESTART)
 			logicS = logicState.LOOSE;
 		else if (logicS !=logicState.RESTART)
@@ -251,18 +298,16 @@ public class IG extends Pane implements Game {
 		case OPEN:
 			if (handPos == 2 && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
 				heldDisk = t.getTop();
-				heldDisk.playMusic();
+//				heldDisk.playMusic();
+				bg.play(heldDisk.firstT());
+				
 				logicS = logicState.HOLD;
 				this.holdTime = System.currentTimeMillis();
 			}
 			else if (handPos == 1 && (System.currentTimeMillis() - this.openTime) > 600){
 				if (restart.onClick(palm.getX()+750, palm.getY()+450)){
-					this.restartTime = System.currentTimeMillis();
 					restart.questionBox().setVisible(true);
 					logicS = logicState.RESTART;
-				}
-				else{
-					//play music?
 				}
 			}
 			break;
