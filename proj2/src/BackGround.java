@@ -14,7 +14,7 @@ public class BackGround {
 	private int BGWidth = 1500;
 	Image left, mid, right;
 	Label imageLabel;
-	Media BGM;
+	Media BGM,WinningMusic;
 	MediaPlayer mediaPlayer;
 	MediaView mediaView;
 	AudioClip sound;
@@ -25,7 +25,7 @@ public class BackGround {
 		right = new Image("bg right.png", BGWidth, BGHeight, false, false);
 		imageLabel = new Label("", new ImageView(mid));
 		BGM = new Media(getClass().getClassLoader().getResource("BGMBind.wav").toString());
-		
+		WinningMusic = new Media(getClass().getClassLoader().getResource("WinningMusic.mp3").toString());
 		
 //		 mediaView.setMediaPlayer(mediaPlayer);
 	}
@@ -59,11 +59,26 @@ public class BackGround {
 //		sound.play();
 	}
 	
+	public void playWinningMusic()
+	{
+		 mediaPlayer = new MediaPlayer(WinningMusic);		
+		 mediaPlayer.setVolume(0.4);
+		 mediaPlayer.setAutoPlay(true);
+		 mediaPlayer.setCycleCount(mediaPlayer.INDEFINITE);
+	}
+	
+	public void stop()
+	{
+		if(mediaPlayer!=null)
+		mediaPlayer.stop();
+	}
+	
+	
 	public void play()
 	{
 		 mediaPlayer.setAutoPlay(true);
 //		 mediaPlayer.setVolume(0.4);
-		System.out.println(mediaPlayer.getVolume()); 
+//		System.out.println(mediaPlayer.getVolume()); 
 //		sound.play();
 	}
 }
