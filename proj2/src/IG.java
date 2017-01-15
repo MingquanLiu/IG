@@ -58,7 +58,8 @@ public class IG extends Pane implements Game {
 	private Label winImage = new Label("",new ImageView(new Image("winwin.png",1300,800,false,false)));
 	private Label insImage = new Label("",new ImageView(new Image("Instruction.png",240,180,false,false)));
 	private Label startImage = new Label("",new ImageView(new Image("intro.png",1500,900,false,false)));
-	
+	private Label restartImage = new Label("",new ImageView(new Image("getRestarted.png",1500,900,false,false)));
+	private Label colorIcon = new Label("",new ImageView(new Image("icon.png",130,130,false,false)));
 	public IG() {
 		setStyle("-fx-background-color: white;");
 		getChildren().add(bg.getLabel());
@@ -95,7 +96,14 @@ public class IG extends Pane implements Game {
 		insImage.setLayoutX(40);
 		insImage.setLayoutY(20);
 		getChildren().add(insImage);
-
+		
+		getChildren().add(restartImage);
+		restartImage.setVisible(false);
+		
+		getChildren().add(colorIcon);
+		colorIcon.setLayoutX(290);
+		colorIcon.setLayoutY(30);
+		colorIcon.setVisible(true);
 		getChildren().add(startImage);
 		startImage.setVisible(true);
 		restartGame(GameState.NEW);
@@ -107,7 +115,7 @@ public class IG extends Pane implements Game {
 	}
 	@Override
 	public String getName() {
-		return " Tower Of Honoi ";
+		return " Tower Of Hanoi ";
 	}
 
 	public void restartGame(GameState state) {
@@ -165,6 +173,7 @@ public class IG extends Pane implements Game {
 	public void run() {
 		winImage.setVisible(false);
 		startImage.setVisible(false);
+		restartImage.setVisible(false);
 		bg.stop();
 		bg.playMusic();
 		// Instantiate and start an AnimationTimer to update the component of
@@ -351,6 +360,7 @@ public class IG extends Pane implements Game {
 					restart.questionBox().setVisible(false);
 				} else if (this.restart.onClickYes(palm.getX(), palm.getY())) {
 					restart.questionBox().setVisible(false);
+					restartImage.setVisible(true);
 					return false;//discontinue the logic
 				}
 			}
