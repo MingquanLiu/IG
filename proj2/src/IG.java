@@ -61,9 +61,6 @@ public class IG extends Pane implements Game {
 		getChildren().add(t2.getImage());
 		getChildren().add(t3.getImage());
 		
-		palm = new PalmH();
-		getChildren().add(palm.getCircle());
-		
 		getChildren().add(six.getImage());
 		getChildren().add(five.getImage());
 		getChildren().add(four.getImage());
@@ -73,6 +70,9 @@ public class IG extends Pane implements Game {
 		getChildren().add(zero.getImage());
 		getChildren().add(restart.getImage());
 		getChildren().add(restart.questionBox());
+		
+		palm = new PalmH();
+		getChildren().add(palm.getCircle());
 		
 		zero.setMusic("01.wav");
 		one.setMusic("02.wav");
@@ -92,7 +92,7 @@ public class IG extends Pane implements Game {
 	}
 
 	public String getName() {
-		return "TowerOfHonoi";
+		return " Tower Of Honoi ";
 	}
 
 	public void restartGame(GameState state) {
