@@ -45,10 +45,10 @@ public class IG extends Pane implements Game {
 	private Tower t1 = new Tower(250, 500, 1), t2 = new Tower(750, 500, 2), t3 = new Tower(1250, 500, 3);
     //to handle restart from the middle of a game
 	private Restart restart = new Restart(1250, 40);
-	//stores the one object being picked by the curser
+	//stores the one object being picked by the cursor
 	private Disk heldDisk;
 
-	//the states that the game coudl be in
+	//the states that the game could be in
 	public enum GameState {
 		WON, LOST, ACTIVE, NEW
 	}
@@ -57,6 +57,7 @@ public class IG extends Pane implements Game {
 	
 	private Label winImage = new Label("",new ImageView(new Image("winwin.png",1300,800,false,false)));
 	private Label insImage = new Label("",new ImageView(new Image("Instruction.png",240,180,false,false)));
+	private Label startImage = new Label("",new ImageView(new Image("intro.png",1500,900,false,false)));
 	
 	public IG() {
 		setStyle("-fx-background-color: white;");
@@ -95,6 +96,8 @@ public class IG extends Pane implements Game {
 		insImage.setLayoutY(20);
 		getChildren().add(insImage);
 
+		getChildren().add(startImage);
+		startImage.setVisible(true);
 		restartGame(GameState.NEW);
 	}
 
@@ -154,6 +157,7 @@ public class IG extends Pane implements Game {
 
 	public void run() {
 		winImage.setVisible(false);
+		startImage.setVisible(false);
 		bg.stop();
 		bg.playMusic();
 		// Instantiate and start an AnimationTimer to update the component of
