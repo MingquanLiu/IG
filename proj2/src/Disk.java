@@ -13,7 +13,10 @@ public class Disk {
 	private Label imageLabel;
 	private Tower home;
 	AudioClip bm = null;
-
+	boolean firstTime = true;
+	Media BGM;
+	MediaPlayer mediaPlayer;
+	
 	public Disk(int value, String url) {
 		this.value = value;
 		diskWidth = 400;
@@ -51,4 +54,16 @@ public class Disk {
 	{
 		bm.play(0.8);
 	}
+	
+	public int firstT()
+	{
+		if (firstTime)
+		{
+			firstTime = false;			
+			return value;
+		}
+		else
+			return 0;
+	}
+	
 }

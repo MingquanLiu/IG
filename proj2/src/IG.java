@@ -251,7 +251,9 @@ public class IG extends Pane implements Game {
 		case OPEN:
 			if (handPos == 2 && !t.stackEmpty() && (System.currentTimeMillis() - this.openTime) > 600) {
 				heldDisk = t.getTop();
-				heldDisk.playMusic();
+//				heldDisk.playMusic();
+				bg.play(heldDisk.firstT());
+				
 				logicS = logicState.HOLD;
 				this.holdTime = System.currentTimeMillis();
 			}
