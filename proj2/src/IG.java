@@ -284,7 +284,6 @@ public class IG extends Pane implements Game {
 			break;
 		case RESTART:
 			if (handPos == 1) {
-				System.out.println(this.restart.onClickNo(palm.getX(), palm.getY()));
 				if (this.restart.onClickNo(palm.getX(), palm.getY())) {
 					logicS = logicState.OPEN;
 					this.openTime = System.currentTimeMillis();
