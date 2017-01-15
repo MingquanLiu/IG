@@ -11,8 +11,8 @@ public class PalmH {
 	private int X, Y; 
 	public static final int MAX_X = IG.WIDTH;
 	public static final int MAX_Y = IG.HEIGHT;
-	private final int handWidth = 70;
-	private final int handHeight = 80;
+	private final int handWidth = 140;
+	private final int handHeight = 160;
 	Image hand,handHold,pointed;
 	
 	private Label imageLabel;
