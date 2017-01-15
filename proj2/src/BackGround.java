@@ -23,11 +23,11 @@ public class BackGround {
 		mid = new Image("bg mid.png", BGWidth, BGHeight, false, false);
 		right = new Image("bg right.png", BGWidth, BGHeight, false, false);
 		imageLabel = new Label("", new ImageView(mid));
-		BGM = new Media(getClass().getClassLoader().getResource("BGMBind.wav").toString());
+		BGM = new Media(getClass().getClassLoader().getResource("BGM.mp3").toString());
 		WinningMusic = new Media(getClass().getClassLoader().getResource("WinningMusic.mp3").toString());
 		BGM3 =new Media(getClass().getClassLoader().getResource("BGM3.mp3").toString());
-		BGM4 =new Media(getClass().getClassLoader().getResource("BGM5.mp3").toString());
-		BGM5 =new Media(getClass().getClassLoader().getResource("BGM4.mp3").toString());
+		BGM4 =new Media(getClass().getClassLoader().getResource("BGM4.mp3").toString());
+		BGM5 =new Media(getClass().getClassLoader().getResource("BGM5.mp3").toString());
 		BGM6 =new Media(getClass().getClassLoader().getResource("BGM6.mp3").toString());
 //		 mediaView.setMediaPlayer(mediaPlayer);
 	}
@@ -61,8 +61,8 @@ public class BackGround {
 		case 2:	
 			break;
 		case 3:	
-//			mediaPlayer.stop();
-//			playM(BGM3);
+			mediaPlayer.stop();
+			playM(BGM3);
 			break;
 		case 4:	
 			mediaPlayer.stop();
