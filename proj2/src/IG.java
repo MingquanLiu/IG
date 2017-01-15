@@ -277,12 +277,12 @@ public class IG extends Pane implements Game {
 			break;
 		case RESTART:
 			if (handPos == 1) {
-				System.out.println(this.restart.onClickNo(palm.getX() + 750, palm.getY() + 450));
-				if (this.restart.onClickNo(palm.getX() + 750, palm.getY() + 450)) {
+				System.out.println(this.restart.onClickNo(palm.getX(), palm.getY()));
+				if (this.restart.onClickNo(palm.getX(), palm.getY())) {
 					logicS = logicState.OPEN;
 					this.openTime = System.currentTimeMillis();
 					restart.questionBox().setVisible(false);
-				} else if (this.restart.onClickYes(palm.getX() + 750, palm.getY() + 450)) {
+				} else if (this.restart.onClickYes(palm.getX(), palm.getY())) {
 					restart.questionBox().setVisible(false);
 					return false;//discontinue the logic
 				}
