@@ -8,7 +8,6 @@ import javafx.scene.shape.Circle;
 
 public class PalmH {
 	
-
 	private int X, Y; 
 	public static final int MAX_X = IG.WIDTH;
 	public static final int MAX_Y = IG.HEIGHT;
@@ -16,11 +15,9 @@ public class PalmH {
 	private final int handHeight = 80;
 	Image hand,handHold,pointed;
 	
-	private Label imageLabel,imageLabelHold,imageReturn;
-	int choice;										// 0 means open 1 means point 2 means hold 
+	private Label imageLabel;
 	public PalmH()
 	{
-		choice =0;
 		X = MAX_X/2;
 		Y = MAX_Y/2;
 		hand = new Image("open.png", handWidth, handHeight, false, false);
@@ -30,17 +27,9 @@ public class PalmH {
 		
 		handHold = new Image("pinch.png", handWidth, handHeight, false, false);
 		pointed = new Image("point.png", handWidth, handHeight, false, false);
-//		imageLabelHold = new Label("",new ImageView(handHold));
-//		imageLabelHold.setLayoutX(X-handWidth/2);
-//		imageLabelHold.setLayoutY(Y-handHeight/2);
-//		
-//		imageReturn = imageLabel;
-		
-		
 	}
 	
 	public void bePointed(){
-		//imageReturn = imageLabelHold;
 		imageLabel.setGraphic(new ImageView(pointed));
 	}
 	
@@ -77,8 +66,6 @@ public class PalmH {
 		setY(y);
 		imageLabel.setTranslateX(x);
 		imageLabel.setTranslateY(y);
-//		imageLabelHold.setTranslateX(x);
-//		imageLabelHold.setTranslateY(y);
 	}
 	
 	
