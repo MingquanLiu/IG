@@ -288,7 +288,6 @@ public class IG extends Pane implements Game {
 			}
 			break;
 		}
-		
 		return true;
 	}
 
