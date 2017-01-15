@@ -53,13 +53,11 @@ public class Restart {
 	}
 	
 	public boolean onClickYes(int x, int y){//-80-20, 20-60 
-//		return y > 20 && y < 60 && x > -80 && x < 20;
-		return y > 0 && y < 100 && x > -100 && x <100;
+		return y > 20 && y < 60 && x > -80 && x < 20;
 	}
 	
 	public boolean onClickNo(int x, int y){//60-150, 20-60
-//		return y > 20 && y < 60 && x > 60 && x < 150;
-		return false;
+		return y > 20 && y < 60 && x > 60 && x < 150;
 	}
 	
 }
